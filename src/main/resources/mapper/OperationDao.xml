@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.gauditdemo.dao.OperationDao">
+
+    <resultMap type="com.example.gauditdemo.entity.Operation" id="OperationMap">
+        <result property="operationId" column="OPERATION_ID" jdbcType="VARCHAR"/>
+        <result property="masterId" column="MASTER_ID" jdbcType="VARCHAR"/>
+        <result property="operatorPersonId" column="OPERATOR_PERSON_ID" jdbcType="VARCHAR"/>
+        <result property="operatorUsername" column="OPERATOR_USERNAME" jdbcType="VARCHAR"/>
+        <result property="operatorPersonName" column="OPERATOR_PERSON_NAME" jdbcType="VARCHAR"/>
+        <result property="operatorEmployeeNo" column="OPERATOR_EMPLOYEE_NO" jdbcType="VARCHAR"/>
+        <result property="operationTime" column="OPERATION_TIME" jdbcType="INTEGER"/>
+        <result property="operationDetail" column="OPERATION_DETAIL" jdbcType="VARCHAR"/>
+        <result property="tenant" column="TENANT" jdbcType="VARCHAR"/>
+        <result property="operationDetailClasskey" column="OPERATION_DETAIL_CLASSKEY" jdbcType="VARCHAR"/>
+        <result property="operationDetailResourcekey" column="OPERATION_DETAIL_RESOURCEKEY" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="OperationMap">
+        select
+          OPERATION_ID, MASTER_ID, OPERATOR_PERSON_ID, OPERATOR_USERNAME, OPERATOR_PERSON_NAME, OPERATOR_EMPLOYEE_NO, OPERATION_TIME, OPERATION_DETAIL, TENANT, OPERATION_DETAIL_CLASSKEY, OPERATION_DETAIL_RESOURCEKEY
+        from operation
+        where OPERATION_ID = #{operationId}
+    </select>
+
+    <!--查询指定行数据-->
+    <!--<select id="queryAllByLimit" resultMap="OperationMap">
+        select
+          OPERATION_ID, MASTER_ID, OPERATOR_PERSON_ID, OPERATOR_USERNAME, OPERATOR_PERSON_NAME, OPERATOR_EMPLOYEE_NO, OPERATION_TIME, OPERATION_DETAIL, TENANT, OPERATION_DETAIL_CLASSKEY, OPERATION_DETAIL_RESOURCEKEY
+        from operation
+        <where>
+            <if test="operationId != null and operationId != ''">
+                and OPERATION_ID = #{operationId}
+            </if>
+            <if test="masterId != null and masterId != ''">
+                and MASTER_ID = #{masterId}
+            </if>
+            <if test="operatorPersonId != null and operatorPersonId != ''">
+                and OPERATOR_PERSON_ID = #{operatorPersonId}
+            </if>
+            <if test="operatorUsername != null and operatorUsername != ''">
+                and OPERATOR_USERNAME = #{operatorUsername}
+            </if>
+            <if test="operatorPersonName != null and operatorPersonName != ''">
+                and OPERATOR_PERSON_NAME = #{operatorPersonName}
+            </if>
+            <if test="operatorEmployeeNo != null and operatorEmployeeNo != ''">
+                and OPERATOR_EMPLOYEE_NO = #{operatorEmployeeNo}
+            </if>
+            <if test="operationTime != null">
+                and OPERATION_TIME = #{operationTime}
+            </if>
+            <if test="operationDetail != null and operationDetail != ''">
+                and OPERATION_DETAIL = #{operationDetail}
+            </if>
+            <if test="tenant != null and tenant != ''">
+                and TENANT = #{tenant}
+            </if>
+            <if test="operationDetailClasskey != null and operationDetailClasskey != ''">
+                and OPERATION_DETAIL_CLASSKEY = #{operationDetailClasskey}
+            </if>
+            <if test="operationDetailResourcekey != null and operationDetailResourcekey != ''">
+                and OPERATION_DETAIL_RESOURCEKEY = #{operationDetailResourcekey}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>-->
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from operation
+        <where>
+            <if test="operationId != null and operationId != ''">
+                and OPERATION_ID = #{operationId}
+            </if>
+            <if test="masterId != null and masterId != ''">
+                and MASTER_ID = #{masterId}
+            </if>
+            <if test="operatorPersonId != null and operatorPersonId != ''">
+                and OPERATOR_PERSON_ID = #{operatorPersonId}
+            </if>
+            <if test="operatorUsername != null and operatorUsername != ''">
+                and OPERATOR_USERNAME = #{operatorUsername}
+            </if>
+            <if test="operatorPersonName != null and operatorPersonName != ''">
+                and OPERATOR_PERSON_NAME = #{operatorPersonName}
+            </if>
+            <if test="operatorEmployeeNo != null and operatorEmployeeNo != ''">
+                and OPERATOR_EMPLOYEE_NO = #{operatorEmployeeNo}
+            </if>
+            <if test="operationTime != null">
+                and OPERATION_TIME = #{operationTime}
+            </if>
+            <if test="operationDetail != null and operationDetail != ''">
+                and OPERATION_DETAIL = #{operationDetail}
+            </if>
+            <if test="tenant != null and tenant != ''">
+                and TENANT = #{tenant}
+            </if>
+            <if test="operationDetailClasskey != null and operationDetailClasskey != ''">
+                and OPERATION_DETAIL_CLASSKEY = #{operationDetailClasskey}
+            </if>
+            <if test="operationDetailResourcekey != null and operationDetailResourcekey != ''">
+                and OPERATION_DETAIL_RESOURCEKEY = #{operationDetailResourcekey}
+            </if>
+        </where>
+    </select>
+
+<!--    /** 查询所有数据 */-->
+    <select id="selectOperationAll" resultType="map" fetchSize="1000">
+        select * from operation limit 1100
+    </select>
+
+    <select id="selectOperationAndChangeDate" resultType="java.util.Map">
+        SELECT
+            cd.ID id,
+            op.MASTER_ID masterid,
+            op.OPERATOR_USERNAME operatorusername,
+            op.OPERATOR_PERSON_ID operatorpersonid,
+            op.OPERATOR_PERSON_NAME operatorpersonname,
+            op.OPERATOR_EMPLOYEE_NO operatoremployeeno,
+            op.OPERATION_DETAIL operationdetail,
+            cd.MODULE module,
+            cd.CHILD_MODULE childmodule,
+            cd.PRODUCT product,
+			FROM_UNIXTIME(op.OPERATION_TIME/1000, '%Y-%m-%d %H:%i:%s') operationtime,
+            op.TENANT tenant,
+            cd.DML_TYPE dmltype,
+            cd.PERSON_NAME personname,
+            cd.OBJECT_ID objectid,
+            cd.OBJECT_KEY objectkey,
+            cd.OBJECT_CHANGEDATA objectchangedata,
+            DATE_FORMAT(CURDATE(), '%Y-%m') indexsuffix
+        from CHANGE_DATA cd
+            inner JOIN OPERATION op on op.OPERATION_ID = cd.OPERATION_ID
+            left join data_sync_status ds on cd.ID = ds.CHANGE_DATA_ID WHERE ds.CHANGE_DATA_ID is null;
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="operationId" useGeneratedKeys="true">
+        insert into operation(MASTER_ID, OPERATOR_PERSON_ID, OPERATOR_USERNAME, OPERATOR_PERSON_NAME, OPERATOR_EMPLOYEE_NO, OPERATION_TIME, OPERATION_DETAIL, TENANT, OPERATION_DETAIL_CLASSKEY, OPERATION_DETAIL_RESOURCEKEY)
+        values (#{masterId}, #{operatorPersonId}, #{operatorUsername}, #{operatorPersonName}, #{operatorEmployeeNo}, #{operationTime}, #{operationDetail}, #{tenant}, #{operationDetailClasskey}, #{operationDetailResourcekey})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="operationId" useGeneratedKeys="true">
+        insert into operation(MASTER_ID, OPERATOR_PERSON_ID, OPERATOR_USERNAME, OPERATOR_PERSON_NAME, OPERATOR_EMPLOYEE_NO, OPERATION_TIME, OPERATION_DETAIL, TENANT, OPERATION_DETAIL_CLASSKEY, OPERATION_DETAIL_RESOURCEKEY)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.masterId}, #{entity.operatorPersonId}, #{entity.operatorUsername}, #{entity.operatorPersonName}, #{entity.operatorEmployeeNo}, #{entity.operationTime}, #{entity.operationDetail}, #{entity.tenant}, #{entity.operationDetailClasskey}, #{entity.operationDetailResourcekey})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="operationId" useGeneratedKeys="true">
+        insert into operation(MASTER_ID, OPERATOR_PERSON_ID, OPERATOR_USERNAME, OPERATOR_PERSON_NAME, OPERATOR_EMPLOYEE_NO, OPERATION_TIME, OPERATION_DETAIL, TENANT, OPERATION_DETAIL_CLASSKEY, OPERATION_DETAIL_RESOURCEKEY)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.masterId}, #{entity.operatorPersonId}, #{entity.operatorUsername}, #{entity.operatorPersonName}, #{entity.operatorEmployeeNo}, #{entity.operationTime}, #{entity.operationDetail}, #{entity.tenant}, #{entity.operationDetailClasskey}, #{entity.operationDetailResourcekey})
+        </foreach>
+        on duplicate key update
+        MASTER_ID = values(MASTER_ID),
+        OPERATOR_PERSON_ID = values(OPERATOR_PERSON_ID),
+        OPERATOR_USERNAME = values(OPERATOR_USERNAME),
+        OPERATOR_PERSON_NAME = values(OPERATOR_PERSON_NAME),
+        OPERATOR_EMPLOYEE_NO = values(OPERATOR_EMPLOYEE_NO),
+        OPERATION_TIME = values(OPERATION_TIME),
+        OPERATION_DETAIL = values(OPERATION_DETAIL),
+        TENANT = values(TENANT),
+        OPERATION_DETAIL_CLASSKEY = values(OPERATION_DETAIL_CLASSKEY),
+        OPERATION_DETAIL_RESOURCEKEY = values(OPERATION_DETAIL_RESOURCEKEY)
+    </insert>
+
+<!--    /** 已同步的数据插入到data_sync_status这张表中 */-->
+    <insert id="insertSyncStatus">
+        INSERT INTO data_sync_status (CHANGE_DATA_ID)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity})
+        </foreach>
+    </insert>
+
+    <!--<insert id="insertSyncStatus">
+        INSERT INTO data_sync_status (CHANGE_DATA_ID)
+        SELECT cd.ID from CHANGE_DATA cd
+                              inner JOIN OPERATION op on op.OPERATION_ID = cd.OPERATION_ID
+                              left join data_sync_status ds on cd.ID = ds.CHANGE_DATA_ID WHERE ds.CHANGE_DATA_ID is null;
+    </insert>-->
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update operation
+        <set>
+            <if test="masterId != null and masterId != ''">
+                MASTER_ID = #{masterId},
+            </if>
+            <if test="operatorPersonId != null and operatorPersonId != ''">
+                OPERATOR_PERSON_ID = #{operatorPersonId},
+            </if>
+            <if test="operatorUsername != null and operatorUsername != ''">
+                OPERATOR_USERNAME = #{operatorUsername},
+            </if>
+            <if test="operatorPersonName != null and operatorPersonName != ''">
+                OPERATOR_PERSON_NAME = #{operatorPersonName},
+            </if>
+            <if test="operatorEmployeeNo != null and operatorEmployeeNo != ''">
+                OPERATOR_EMPLOYEE_NO = #{operatorEmployeeNo},
+            </if>
+            <if test="operationTime != null">
+                OPERATION_TIME = #{operationTime},
+            </if>
+            <if test="operationDetail != null and operationDetail != ''">
+                OPERATION_DETAIL = #{operationDetail},
+            </if>
+            <if test="tenant != null and tenant != ''">
+                TENANT = #{tenant},
+            </if>
+            <if test="operationDetailClasskey != null and operationDetailClasskey != ''">
+                OPERATION_DETAIL_CLASSKEY = #{operationDetailClasskey},
+            </if>
+            <if test="operationDetailResourcekey != null and operationDetailResourcekey != ''">
+                OPERATION_DETAIL_RESOURCEKEY = #{operationDetailResourcekey},
+            </if>
+        </set>
+        where OPERATION_ID = #{operationId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from operation where OPERATION_ID = #{operationId}
+    </delete>
+
+</mapper>
+
