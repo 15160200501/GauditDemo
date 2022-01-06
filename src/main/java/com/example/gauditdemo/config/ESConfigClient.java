@@ -6,8 +6,7 @@ import org.elasticsearch.client.RestHighLevelClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
+import org.springframework.stereotype.Component;
 
 
 /**
@@ -15,7 +14,7 @@ import org.springframework.context.annotation.Configuration;
  * @Description
  * @date 2021/12/02 13:37
  */
-@Configuration
+@Component
 public class ESConfigClient {
 
     public final Logger logger = LoggerFactory.getLogger(this.getClass());

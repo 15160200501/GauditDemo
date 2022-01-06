@@ -113,7 +113,7 @@
         select * from operation limit 1100
     </select>
 
-    <select id="selectOperationAndChangeDate" resultType="java.util.Map">
+    <select id="selectOperationAndChangeDate" resultType="java.util.Map" fetchSize="1000">
         SELECT
             cd.ID id,
             op.MASTER_ID masterid,

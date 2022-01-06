@@ -3,7 +3,6 @@ package com.example.gauditdemo.controller;
 import com.example.gauditdemo.dao.OperationDao;
 import com.example.gauditdemo.entity.Operation;
 import com.example.gauditdemo.service.OperationService;
-import com.example.gauditdemo.utils.ElasticSearchUtil;
 import org.apache.http.HttpHost;
 import org.elasticsearch.action.ActionListener;
 import org.elasticsearch.action.bulk.BackoffPolicy;
@@ -47,8 +46,8 @@ public class OperationController {
     @Autowired
     private OperationService operationService;
 
-    @Autowired
-    private ElasticSearchUtil elasticSearchUtil;
+    /*@Autowired
+    private ElasticSearchUtil elasticSearchUtil;*/
 
     /*@GetMapping
     public ResponseEntity<Page<Operation>> queryByPage(Operation operation, PageRequest pageRequest) {
@@ -65,7 +64,7 @@ public class OperationController {
     @GetMapping
     public String queryEs() {
         System.out.println("111");
-        elasticSearchUtil.insertIntoEs();
+//        elasticSearchUtil.insertIntoEs();
         return "OK";
     }
 

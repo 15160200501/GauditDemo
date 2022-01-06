@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.gauditdemo.dao.ProductModuleConfigDao">
+
+    <resultMap type="com.example.gauditdemo.entity.ProductModuleConfig" id="ProductModuleConfigMap">
+        <result property="id" column="ID" jdbcType="VARCHAR"/>
+        <result property="type" column="TYPE" jdbcType="VARCHAR"/>
+        <result property="name" column="NAME" jdbcType="VARCHAR"/>
+        <result property="parentId" column="PARENT_ID" jdbcType="VARCHAR"/>
+        <result property="code" column="CODE" jdbcType="VARCHAR"/>
+        <result property="disable" column="DISABLE" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="ProductModuleConfigMap">
+        select
+          ID, TYPE, NAME, PARENT_ID, CODE, DISABLE
+        from product_module_config
+        where ID = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <!--<select id="queryAllByLimit" resultMap="ProductModuleConfigMap">
+        select
+          ID, TYPE, NAME, PARENT_ID, CODE, DISABLE
+        from product_module_config
+        <where>
+            <if test="id != null and id != ''">
+                and ID = #{id}
+            </if>
+            <if test="type != null and type != ''">
+                and TYPE = #{type}
+            </if>
+            <if test="name != null and name != ''">
+                and NAME = #{name}
+            </if>
+            <if test="parentId != null and parentId != ''">
+                and PARENT_ID = #{parentId}
+            </if>
+            <if test="code != null and code != ''">
+                and CODE = #{code}
+            </if>
+            <if test="disable != null">
+                and DISABLE = #{disable}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>-->
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from product_module_config
+        <where>
+            <if test="id != null and id != ''">
+                and ID = #{id}
+            </if>
+            <if test="type != null and type != ''">
+                and TYPE = #{type}
+            </if>
+            <if test="name != null and name != ''">
+                and NAME = #{name}
+            </if>
+            <if test="parentId != null and parentId != ''">
+                and PARENT_ID = #{parentId}
+            </if>
+            <if test="code != null and code != ''">
+                and CODE = #{code}
+            </if>
+            <if test="disable != null">
+                and DISABLE = #{disable}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into product_module_config(TYPE, NAME, PARENT_ID, CODE, DISABLE)
+        values (#{type}, #{name}, #{parentId}, #{code}, #{disable})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into product_module_config(TYPE, NAME, PARENT_ID, CODE, DISABLE)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.type}, #{entity.name}, #{entity.parentId}, #{entity.code}, #{entity.disable})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into product_module_config(TYPE, NAME, PARENT_ID, CODE, DISABLE)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.type}, #{entity.name}, #{entity.parentId}, #{entity.code}, #{entity.disable})
+        </foreach>
+        on duplicate key update
+        TYPE = values(TYPE),
+        NAME = values(NAME),
+        PARENT_ID = values(PARENT_ID),
+        CODE = values(CODE),
+        DISABLE = values(DISABLE)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update product_module_config
+        <set>
+            <if test="type != null and type != ''">
+                TYPE = #{type},
+            </if>
+            <if test="name != null and name != ''">
+                NAME = #{name},
+            </if>
+            <if test="parentId != null and parentId != ''">
+                PARENT_ID = #{parentId},
+            </if>
+            <if test="code != null and code != ''">
+                CODE = #{code},
+            </if>
+            <if test="disable != null">
+                DISABLE = #{disable},
+            </if>
+        </set>
+        where ID = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from product_module_config where ID = #{id}
+    </delete>
+
+    <!--    查询childmodule所有不禁用的数据 -->
+    <select id="selectChildModule" resultType="com.example.gauditdemo.to.productModuleConfigNameTO">
+        select NAME from product_module_config where TYPE = 'childModule' and DISABLE = TRUE
+    </select>
+
+<!--    /** 查询module所有不禁用的数据 */-->
+    <select id="selectModule" resultType="com.example.gauditdemo.to.productModuleConfigNameTO">
+        select NAME from product_module_config where TYPE = 'module' and DISABLE = TRUE
+    </select>
+
+<!--    /** 查询product所有不禁用的数据 */-->
+    <select id="selectProduct" resultType="com.example.gauditdemo.to.productModuleConfigNameTO">
+        select NAME from product_module_config where TYPE = 'product' and DISABLE = TRUE
+    </select>
+
+</mapper>
+
